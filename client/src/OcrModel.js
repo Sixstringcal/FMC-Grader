@@ -20,12 +20,11 @@ const OcrModel = {
         }
       ]
     };
-    const endpoint = `https://vision.googleapis.com/v1/images:annotate`;
+    const endpoint = GOOGLE_VISION_ENDPOINT;
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
     });

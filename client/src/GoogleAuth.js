@@ -9,8 +9,8 @@ function GoogleAuth({ onAuth }) {
     <GoogleOAuthProvider clientId={CLIENT_ID}>
       <GoogleLogin
         onSuccess={credentialResponse => {
-          if (credentialResponse.access_token) {
-            onAuth(credentialResponse.access_token);
+          if (credentialResponse.credential) {
+            onAuth(credentialResponse.credential);
           }
         }}
         onError={() => {
