@@ -14,6 +14,9 @@ yarn-error.log*
 
 # Dependency directories
 client/node_modules/
+client/node_modules/.cache/
+client/node_modules/.cache/default-development/
+client/node_modules/.cache/default-development/0.pack
 server/node_modules/
 
 # Environment files
@@ -22,6 +25,11 @@ server/node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+client/.env
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
 
 # OS generated files
 .DS_Store

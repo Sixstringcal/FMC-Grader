@@ -30,7 +30,24 @@ const OcrModel = {
     });
     const result = await response.json();
     const text = result.responses?.[0]?.fullTextAnnotation?.text || '';
-    return text;
+    // Extract uncertain items (low confidence)
+    const uncertainItems = [];
+    const confidenceThreshold = 0.8;
+    const pages = result.responses?.[0]?.fullTextAnnotation?.pages || [];
+    pages.forEach(page => {
+      page.blocks?.forEach(block => {
+        block.paragraphs?.forEach(paragraph => {
+          paragraph.words?.forEach(word => {
+            const wordText = word.symbols?.map(s => s.text).join('') || '';
+            const avgConfidence = word.symbols?.reduce((sum, s) => sum + (s.confidence ?? 1), 0) / (word.symbols?.length || 1);
+            if (avgConfidence < confidenceThreshold) {
+              uncertainItems.push({ text: wordText, confidence: avgConfidence });
+            }
+          });
+        });
+      });
+    });
+    return { text, uncertainItems };
   },
   parse: (text) => {
     let scrambleLine = '';
