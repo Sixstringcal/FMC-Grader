@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import OcrModel from './OcrModel';
 
-export default function useAppViewModel() {
+export default function useAppViewModel(accessToken) {
   const [image, setImage] = useState(null);
   const [ocrResult, setOcrResult] = useState('');
   const [scramble, setScramble] = useState('');
@@ -17,7 +17,7 @@ export default function useAppViewModel() {
   const handleOcr = async () => {
     if (!image) return;
     setLoading(true);
-    const text = await OcrModel.recognize(image);
+    const text = await OcrModel.recognize(image, accessToken);
     setOcrResult(text);
     const { scramble: parsedScramble, moves: parsedMoves } = OcrModel.parse(text);
     setScramble(parsedScramble);
