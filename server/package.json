@@ -1,0 +1,14 @@
+{
+  "name": "fmc-grader-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
