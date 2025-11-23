@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import useAppViewModel from './AppViewModel';
 import GoogleAuth from './GoogleAuth';
 import OcrReview from './OcrReview';
+import './App.css';
 
 function App() {
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessTokenState] = useState(() => localStorage.getItem('accessToken'));
   const {
     image,
     scramble,
@@ -16,6 +17,16 @@ function App() {
     handleImageChange,
     handleOcr
   } = useAppViewModel(accessToken);
+
+  // Persist accessToken in localStorage
+  const setAccessToken = (token) => {
+    setAccessTokenState(token);
+    if (token) {
+      localStorage.setItem('accessToken', token);
+    } else {
+      localStorage.removeItem('accessToken');
+    }
+  };
   const [corrections, setCorrections] = useState(null);
 
   const handleReviewConfirm = (newCorrections) => {
@@ -25,7 +36,7 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: 'auto', padding: 20 }}>
+    <div className="app-container">
       <h1>FMC Grader OCR Webapp</h1>
       {!accessToken && (
         <div style={{ marginBottom: 20 }}>
@@ -35,24 +46,26 @@ function App() {
       {accessToken && (
         <>
           <input type="file" accept="image/*" onChange={handleImageChange} />
-          <button onClick={handleOcr} disabled={!image || loading} style={{ marginLeft: 10 }}>
+          <button onClick={handleOcr} disabled={!image || loading}>
             {loading ? 'Processing...' : 'Transcribe Moves'}
           </button>
           {uncertainItems && uncertainItems.length > 0 ? (
-            <OcrReview uncertainItems={uncertainItems} onConfirm={handleReviewConfirm} />
+            <div className="ocr-review">
+              <OcrReview uncertainItems={uncertainItems} onConfirm={handleReviewConfirm} />
+            </div>
           ) : (
-            <div style={{ marginTop: 20 }}>
+            <div>
               <h2>Scramble</h2>
-              <pre style={{ background: '#e8f4ff', padding: 10 }}>{scramble}</pre>
+              <pre>{scramble}</pre>
               <h2>Handwritten Moves</h2>
-              <ul style={{ background: '#f4f4f4', padding: 10 }}>
+              <ul>
                 {moves.map((move, idx) => (
                   <li key={idx}>{move}</li>
                 ))}
               </ul>
-              <details>
+              <details className="details">
                 <summary>Raw OCR Result</summary>
-                <pre style={{ background: '#f9f9f9', padding: 10 }}>{ocrResult}</pre>
+                <pre>{ocrResult}</pre>
               </details>
             </div>
           )}

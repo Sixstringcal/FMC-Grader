@@ -17,22 +17,21 @@ function OcrReview({ uncertainItems, onConfirm }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ background: '#fffbe6', padding: 20, borderRadius: 8 }}>
+    <form onSubmit={handleSubmit} className="ocr-review">
       <h2>Review Uncertain OCR Results</h2>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      <ul>
         {uncertainItems.map((item, idx) => (
-          <li key={idx} style={{ marginBottom: 16 }}>
+          <li key={idx}>
             <div>Confidence: {Math.round(item.confidence * 100)}%</div>
             <input
               type="text"
               value={corrections[idx]}
               onChange={e => handleChange(idx, e.target.value)}
-              style={{ width: '100%', padding: 8, fontSize: 16 }}
             />
           </li>
         ))}
       </ul>
-      <button type="submit" style={{ padding: '8px 16px', fontSize: 16 }}>Confirm</button>
+      <button type="submit">Confirm</button>
     </form>
   );
 }
