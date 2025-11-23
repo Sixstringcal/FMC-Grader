@@ -59,13 +59,18 @@ function App() {
           ) : (
             <div>
               <h2>Scramble</h2>
-              <pre>{scramble}</pre>
+              <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', width: '100%', fontFamily: 'monospace', fontSize: '1.1em', background: '#f8f8f8', padding: '8px', borderRadius: '6px', boxSizing: 'border-box' }}>{scramble}</pre>
               <h2>Handwritten Moves</h2>
-              <ul>
-                {moves.map((move, idx) => (
-                  <li key={idx}>{move}</li>
-                ))}
-              </ul>
+              <div className="moves-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '8px', marginBottom: '12px' }}>
+                {(() => {
+                  const flatMoves = moves.join(' ').split(' ').filter(Boolean);
+                  return flatMoves.map((move, idx) => (
+                    <div key={idx} style={{ textAlign: 'center', padding: '4px 0', borderBottom: '1px solid #eee', fontFamily: 'monospace', fontSize: '1.1em' }}>
+                      {move}
+                    </div>
+                  ));
+                })()}
+              </div>
               <details className="details">
                 <summary>Raw OCR Result</summary>
                 <pre>{ocrResult}</pre>
