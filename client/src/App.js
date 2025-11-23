@@ -18,7 +18,6 @@ function App() {
     handleOcr
   } = useAppViewModel(accessToken);
 
-  // Persist accessToken in localStorage
   const setAccessToken = (token) => {
     setAccessTokenState(token);
     if (token) {
@@ -32,7 +31,6 @@ function App() {
   const handleReviewConfirm = (newCorrections) => {
     setCorrections(newCorrections);
     setUncertainItems([]);
-    // Optionally, update moves/scramble with corrections if needed
   };
 
   return (
@@ -51,7 +49,12 @@ function App() {
           </button>
           {uncertainItems && uncertainItems.length > 0 ? (
             <div className="ocr-review">
-              <OcrReview uncertainItems={uncertainItems} onConfirm={handleReviewConfirm} />
+              <OcrReview
+                uncertainItems={uncertainItems}
+                onConfirm={handleReviewConfirm}
+                scramble={scramble}
+                moves={moves}
+              />
             </div>
           ) : (
             <div>
@@ -67,6 +70,17 @@ function App() {
                 <summary>Raw OCR Result</summary>
                 <pre>{ocrResult}</pre>
               </details>
+            </div>
+          )}
+          {scramble && moves && moves.length > 0 && (
+            <div style={{ marginTop: 20 }}>
+              <h2>Solution Viewer</h2>
+              <twisty-player
+                experimental-setup-alg={scramble}
+                alg={moves.map(m => m.trim()).join(' ')}
+                background="none"
+                style={{ width: '100%', height: '400px', border: '1px solid #ccc', borderRadius: '8px' }}
+              />
             </div>
           )}
         </>

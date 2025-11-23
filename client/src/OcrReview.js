@@ -1,6 +1,9 @@
 import React from 'react';
 
-function OcrReview({ uncertainItems, onConfirm }) {
+function OcrReview({ uncertainItems, onConfirm, scramble, moves }) {
+  // Debug output for scramble and moves
+  console.log('OcrReview scramble:', scramble);
+  console.log('OcrReview moves:', moves);
   const [corrections, setCorrections] = React.useState(
     uncertainItems.map(item => item.text)
   );
@@ -15,6 +18,11 @@ function OcrReview({ uncertainItems, onConfirm }) {
     e.preventDefault();
     onConfirm(corrections);
   };
+
+  // Build Alg.cubing.net URL from scramble and moves
+  const algUrl = scramble && moves && moves.length > 0
+    ? `https://alg.cubing.net/?setup=${encodeURIComponent(scramble.replace(/ /g, '_'))}&alg=${encodeURIComponent(moves.join(' '))}`
+    : null;
 
   return (
     <form onSubmit={handleSubmit} className="ocr-review">
@@ -32,6 +40,17 @@ function OcrReview({ uncertainItems, onConfirm }) {
         ))}
       </ul>
       <button type="submit">Confirm</button>
+      {/* Show Alg.cubing.net iframe only if scramble and moves are available */}
+      {algUrl && (
+        <iframe
+          title="Alg.cubing.net"
+          src={algUrl}
+          width="100%"
+          height="400"
+          style={{ border: "1px solid #ccc", marginTop: "20px" }}
+          allowFullScreen
+        />
+      )}
     </form>
   );
 }

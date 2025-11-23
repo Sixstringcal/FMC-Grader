@@ -53,13 +53,17 @@ const OcrModel = {
     let scrambleLine = '';
     let movesList = [];
     const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    // Helper to add spaces between moves (single letters or letter+modifier)
+    const moveRegex = /([RUFLDBMESxyz][2']?|[RUFLDBMESxyz])/g;
+    const formatMoves = (line) => line.match(moveRegex)?.join(' ') || line;
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].toLowerCase().startsWith('scramble:')) {
-        scrambleLine = lines[i].replace(/scramble:/i, '').trim();
+        const raw = lines[i].replace(/scramble:/i, '').trim();
+        scrambleLine = formatMoves(raw);
       }
       // Moves: look for lines with cube notation (R, U, F, etc.)
       if (/^[RUFLDBxyz2' ]+$/.test(lines[i])) {
-        movesList.push(lines[i]);
+        movesList.push(formatMoves(lines[i]));
       }
     }
     return { scramble: scrambleLine, moves: movesList };
