@@ -1,4 +1,4 @@
-# FMC Grader Webapp
+# FMC Grader
 
 A web application for transcribing handwritten Rubik's Cube FMC solution sheets using OCR.
 

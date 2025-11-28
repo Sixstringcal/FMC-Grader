@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>FMC Grader OCR Webapp</h1>
+      <h1>FMC Grader OCR</h1>
       {!accessToken && (
         <div style={{ marginBottom: 20 }}>
           <GoogleAuth onAuth={setAccessToken} />
