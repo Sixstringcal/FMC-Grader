@@ -57,7 +57,10 @@ function App() {
       )}
       {accessToken && (
         <>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <input type="file" accept="image/*" capture="environment" onChange={handleImageChange} />
+          <div style={{ fontSize: '0.9em', color: '#666', marginTop: 8, marginBottom: 12 }}>
+            On mobile, choose the Camera option to take a photo instead of uploading.
+          </div>
           <button onClick={handleOcr} disabled={!image || loading}>
             {loading ? 'Processing...' : 'Transcribe Moves'}
           </button>
