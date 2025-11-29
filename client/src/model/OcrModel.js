@@ -55,20 +55,31 @@ const OcrModel = {
 };
 
 function formatMoves(line) {
-    const moveRegex = /([RUFLDBxyz][2']?|[RUFLDBxyz])/g;
-    return line.match(moveRegex)?.join(' ') || line;
+    const moveRegex = /(?:[URFDLB](?:w)?(?:2|')?|[xyz](?:2|')?)/gi;
+    const matches = line.match(moveRegex);
+    return matches ? matches.join(' ') : line;
 }
 
 function parseMoves(text) {
     let movesList = [];
 
-    const input = text.split('Scramble\n')[1].split('\n');//.split('\n');
-    const scrambleLine = formatMoves(input[0].trim());
-    alert(input[0]);
-    for (let i = 1; i < input.length; i++) {
-        const line = input[i].trim();
-        if (line) {
-            movesList.push(formatMoves(line));
+    // Find the last occurrence of the word "Scramble" (case-insensitive).
+    // The text after that occurrence (optionally after a colon/newline) is treated as the scramble + moves.
+    let body = text || '';
+    const lower = body.toLowerCase();
+    const idx = lower.lastIndexOf('scramble');
+    if (idx !== -1) {
+        body = body.slice(idx + 'scramble'.length);
+        // Strip leading colons and whitespace/newlines
+        body = body.replace(/^[\s:]+/, '');
+    }
+
+    const lines = body.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let scrambleLine = '';
+    if (lines.length) {
+        scrambleLine = formatMoves(lines[0]);
+        for (let i = 1; i < lines.length; i++) {
+            movesList.push(formatMoves(lines[i]));
         }
     }
     return { scramble: scrambleLine, moves: movesList };
