@@ -47,7 +47,6 @@ const OcrModel = {
                 return s;
             };
             text = normalizeOcrText(text);
-            text = postProcessContractions(text);
             // Extract uncertain items (low confidence) for review/inspection
             const uncertainItems = [];
             const confidenceThreshold = 0.8;
@@ -59,9 +58,8 @@ const OcrModel = {
                             let wordText = word.symbols?.map(s => s.text).join('') || '';
                             const avgConfidence = word.symbols?.reduce((sum, s) => sum + (s.confidence ?? 1), 0) / (word.symbols?.length || 1);
                             if (avgConfidence < confidenceThreshold) {
-                                // Normalize uncertain word text as well and post-process contractions
+                                // Normalize uncertain word text as well
                                 wordText = normalizeOcrText(wordText);
-                                wordText = postProcessContractions(wordText);
                                 uncertainItems.push({ text: wordText, confidence: avgConfidence });
                             }
                         });
