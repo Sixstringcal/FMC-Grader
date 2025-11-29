@@ -113,3 +113,41 @@ li:last-child {
   transform: translateY(0) scale(1);
   text-shadow: 0 1px 0 rgba(0,0,0,0.03);
 }
+
+/* Controls row containing the upload (camera) icon, transcribe button, and move count */
+.controls-row {
+  width: 100%;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e6eef8;
+  box-shadow: 0 2px 8px rgba(38, 78, 112, 0.06);
+  cursor: pointer;
+}
+.icon-button svg { display: block; }
+
+.move-count {
+  min-width: 84px;
+  text-align: right;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(37,70,110,0.06);
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+.move-count-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+.move-count-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1f3a57;
+  line-height: 1;
+}

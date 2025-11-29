@@ -57,13 +57,30 @@ function App() {
       )}
       {accessToken && (
         <>
-          <input type="file" accept="image/*" capture="environment" onChange={handleImageChange} />
+          <div className="controls-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <input id="file-input" type="file" accept="image/*" capture="environment" onChange={handleImageChange} style={{ display: 'none' }} />
+              <label htmlFor="file-input" className="icon-button" title="Upload or use camera">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M21 19V8a2 2 0 0 0-2-2h-3l-1-2H9L8 6H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a0 0 0 0 0 0 0z" stroke="#234" strokeWidth="0" fill="#2a4d69" opacity="0.95"/>
+                  <circle cx="12" cy="13" r="3.5" fill="#fff" />
+                  <circle cx="12" cy="13" r="2" fill="#2a4d69" />
+                </svg>
+              </label>
+
+              <button onClick={handleOcr} disabled={!image || loading}>
+                {loading ? 'Processing...' : 'Transcribe Moves'}
+              </button>
+            </div>
+
+            <div className="move-count" aria-live="polite">
+              <div className="move-count-label">Moves</div>
+              <div className="move-count-value">{moves ? moves.length : 0}</div>
+            </div>
+          </div>
           <div style={{ fontSize: '0.9em', color: '#666', marginTop: 8, marginBottom: 12 }}>
             On mobile, choose the Camera option to take a photo instead of uploading.
           </div>
-          <button onClick={handleOcr} disabled={!image || loading}>
-            {loading ? 'Processing...' : 'Transcribe Moves'}
-          </button>
           <div>
             <h2>Scramble</h2>
             <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', width: '100%', fontFamily: 'monospace', fontSize: '1.1em', background: '#f8f8f8', padding: '8px', borderRadius: '6px', boxSizing: 'border-box' }}>{scramble}</pre>
