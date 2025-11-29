@@ -94,3 +94,22 @@ li:last-child {
   background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
   color: #333;
 }
+
+.move-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uncertain-badge {
+  pointer-events: none;
+  position: absolute;
+  right: 6px;
+  top: -6px; /* slightly above the move but not so high it overlaps the previous row */
+  color: #d93025;
+  font-weight: 800;
+  font-size: 1.15em; /* small superscript-like size but still noticeable */
+  line-height: 1;
+  transform: translateY(0) scale(1);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}

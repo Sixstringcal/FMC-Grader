@@ -48,14 +48,16 @@ function App() {
             <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', width: '100%', fontFamily: 'monospace', fontSize: '1.1em', background: '#f8f8f8', padding: '8px', borderRadius: '6px', boxSizing: 'border-box' }}>{scramble}</pre>
             <h2>Handwritten Moves</h2>
             <div className="moves-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '8px', marginBottom: '12px' }}>
-              {(() => {
-                const flatMoves = moves.join(' ').split(' ').filter(Boolean);
-                return flatMoves.map((move, idx) => (
-                  <div key={idx} style={{ textAlign: 'center', padding: '4px 0', borderBottom: '1px solid #eee', fontFamily: 'monospace', fontSize: '1.1em' }}>
-                    {move}
-                  </div>
-                ));
-              })()}
+              {moves && moves.length > 0 && moves.map((moveObj, idx) => (
+                <div key={idx} className="move-item" style={{ textAlign: 'center', padding: '4px 0', borderBottom: '1px solid #eee', fontFamily: 'monospace', fontSize: '1.1em', position: 'relative' }}>
+                  {moveObj.uncertain && (
+                    <div className="uncertain-badge" aria-hidden>
+                      ?
+                    </div>
+                  )}
+                  {moveObj.text}
+                </div>
+              ))}
             </div>
             <details className="details">
               <summary>Raw OCR Result</summary>
@@ -67,7 +69,7 @@ function App() {
               <h2>Solution Viewer</h2>
               <twisty-player
                 experimental-setup-alg={scramble}
-                alg={moves.map(m => m.trim()).join(' ')}
+                alg={moves.map(m => m.text).join(' ')}
                 background="none"
                 style={{ width: '100%', height: '400px', border: '1px solid #ccc', borderRadius: '8px' }}
               />
