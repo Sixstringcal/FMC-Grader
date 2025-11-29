@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || '*';
 app.use(cors({
@@ -15,12 +15,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Serve uploaded files statically so they can be inspected if needed
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+// Do not persist uploaded files to disk. Use memory storage and do not save buffers.
 app.post('/upload', upload.single('image'), (req, res) => {
-  // Placeholder: OCR may be handled on the client; server returns filename
-  res.json({ message: 'Image uploaded', filename: req.file.filename });
+  // The uploaded file (if any) is available in memory as `req.file.buffer`.
+  // Intentionally do NOT write the buffer to disk or persist it on the server.
+  // If you need server-side OCR or forwarding, implement forwarding here and
+  // ensure any buffers are handled according to your retention policy.
+  res.json({ message: 'Image received; server is configured not to store uploads' });
 });
 
 // In production, serve React build from the client folder if it exists
