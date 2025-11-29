@@ -29,7 +29,21 @@ const OcrModel = {
             body: JSON.stringify(requestBody)
         });
         const result = await response.json();
-            const text = result.responses?.[0]?.fullTextAnnotation?.text || '';
+            let text = result.responses?.[0]?.fullTextAnnotation?.text || '';
+            // Normalize OCR output: remove pipe characters, treat '4' as 'U', and uppercase 'u'
+            const normalizeOcrText = (s) => {
+                if (!s) return s;
+                // Remove common pipe/box artifacts and similar vertical bars
+                s = s.replace(/\|/g, '');
+                // Replace digit 4 (often misread for 'U') with 'U'
+                s = s.replace(/4/g, 'U');
+                // Uppercase any lowercase 'u' (common mis-cased move)
+                s = s.replace(/\bu\b/g, 'U');
+                // Also uppercase 'u' when part of moves or adjacent to punctuation/whitespace
+                s = s.replace(/u/g, 'U');
+                return s;
+            };
+            text = normalizeOcrText(text);
             // Extract uncertain items (low confidence) for review/inspection
             const uncertainItems = [];
             const confidenceThreshold = 0.8;
@@ -38,9 +52,11 @@ const OcrModel = {
                 page.blocks?.forEach(block => {
                     block.paragraphs?.forEach(paragraph => {
                         paragraph.words?.forEach(word => {
-                            const wordText = word.symbols?.map(s => s.text).join('') || '';
+                            let wordText = word.symbols?.map(s => s.text).join('') || '';
                             const avgConfidence = word.symbols?.reduce((sum, s) => sum + (s.confidence ?? 1), 0) / (word.symbols?.length || 1);
                             if (avgConfidence < confidenceThreshold) {
+                                // Normalize uncertain word text as well
+                                wordText = normalizeOcrText(wordText);
                                 uncertainItems.push({ text: wordText, confidence: avgConfidence });
                             }
                         });
