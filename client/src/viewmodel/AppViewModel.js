@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import OcrModel from './OcrModel';
+import OcrModel from '../model/OcrModel';
 
 export default function useAppViewModel(accessToken) {
   const [image, setImage] = useState(null);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import useAppViewModel from './AppViewModel';
-import GoogleAuth from './GoogleAuth';
-import OcrReview from './OcrReview';
+import useAppViewModel from './viewmodel/AppViewModel';
+import GoogleAuth from './view/GoogleAuth';
+import OcrReview from './view/OcrReview';
 import './App.css';
 
 function App() {
