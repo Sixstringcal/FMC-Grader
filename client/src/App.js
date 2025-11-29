@@ -12,7 +12,8 @@ function App() {
     ocrResult,
     loading,
     handleImageChange,
-    handleOcr
+    handleOcr,
+    setMoves
   } = useAppViewModel(accessToken);
 
   const setAccessToken = (token) => {
@@ -24,9 +25,26 @@ function App() {
     }
   };
   const [corrections, setCorrections] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(-1);
+  const [editValue, setEditValue] = useState('');
 
   const handleReviewConfirm = (newCorrections) => {
     setCorrections(newCorrections);
+  };
+
+  const saveEdit = (idx, value, _setMoves, _setEditingIndex, _setEditValue) => {
+    const tokens = (value || '').match(/(?:[URFDLB](?:w)?(?:2|')?|[xyz](?:2|')?)/gi) || [];
+    setMoves(prev => {
+      const copy = [...prev];
+      // Replace the single item at idx with the parsed tokens (or remove if tokens empty)
+      copy.splice(idx, 1, ...tokens.map(t => {
+        const isMatch = /^(?:[URFDLB](?:w)?(?:2|')?|[xyz](?:2|')?)$/i.test(t);
+        return { text: t, uncertain: !isMatch };
+      }));
+      return copy;
+    });
+    setEditingIndex(-1);
+    setEditValue('');
   };
 
   return (
@@ -49,13 +67,43 @@ function App() {
             <h2>Handwritten Moves</h2>
             <div className="moves-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '8px', marginBottom: '12px' }}>
               {moves && moves.length > 0 && moves.map((moveObj, idx) => (
-                <div key={idx} className="move-item" style={{ textAlign: 'center', padding: '4px 0', borderBottom: '1px solid #eee', fontFamily: 'monospace', fontSize: '1.1em', position: 'relative' }}>
+                <div
+                  key={idx}
+                  className="move-item"
+                  onClick={() => {
+                    setEditingIndex(idx);
+                    setEditValue(moveObj.text || '');
+                  }}
+                  style={{ cursor: 'pointer', textAlign: 'center', padding: '4px 0', borderBottom: '1px solid #eee', fontFamily: 'monospace', fontSize: '1.1em', position: 'relative' }}
+                >
                   {moveObj.uncertain && (
                     <div className="uncertain-badge" aria-hidden>
                       ?
                     </div>
                   )}
-                  {moveObj.text}
+                  {editingIndex === idx ? (
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+                      <input
+                        autoFocus
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            saveEdit(idx, editValue, setMoves, setEditingIndex, setEditValue);
+                          } else if (e.key === 'Escape') {
+                            setEditingIndex(-1);
+                            setEditValue('');
+                          }
+                        }}
+                        style={{ fontFamily: 'monospace', fontSize: '1.1em', padding: '4px' }}
+                      />
+                      <button onClick={() => saveEdit(idx, editValue, setMoves, setEditingIndex, setEditValue)}>Save</button>
+                      <button onClick={() => { setEditingIndex(-1); setEditValue(''); }}>Cancel</button>
+                    </div>
+                  ) : (
+                    moveObj.text
+                  )}
                 </div>
               ))}
             </div>

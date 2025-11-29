@@ -33,6 +33,7 @@ export default function useAppViewModel(accessToken) {
     moves,
     ocrResult,
     loading,
+    setMoves,
     uncertainItems,
     setUncertainItems,
     handleImageChange,
