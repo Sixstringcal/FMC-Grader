@@ -47,7 +47,7 @@ const OcrModel = {
                 });
             });
         });
-        return { text, uncertainItems };
+        return { text };
     },
     parse: (text) => {
         return parseMoves(text);
