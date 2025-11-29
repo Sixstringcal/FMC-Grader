@@ -71,6 +71,8 @@ const OcrModel = {
 };
 
 function formatMoves(line) {
+    // Remove any pipe characters that may have been read from boxes/lines
+    line = (line || '').replace(/\|/g, '');
     const moveRegex = /(?:[URFDLB](?:w)?(?:2|')?|[xyz](?:2|')?)/gi;
     const matches = line.match(moveRegex);
     return matches ? matches : (line ? line.split(/\s+/).filter(Boolean) : []);
@@ -82,6 +84,8 @@ function parseMoves(text) {
     // Find the last occurrence of the word "Scramble" (case-insensitive).
     // The text after that occurrence (optionally after a colon/newline) is treated as the scramble + moves.
     let body = text || '';
+    // Globally remove any pipe characters that may separate tokens in OCR output
+    body = body.replace(/\|/g, '');
     const lower = body.toLowerCase();
     const idx = lower.lastIndexOf('scramble');
     if (idx !== -1) {
