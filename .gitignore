@@ -11,6 +11,7 @@ yarn-error.log*
 # Build output
 /dist
 /build
+client/build
 
 # Dependency directories
 client/node_modules/

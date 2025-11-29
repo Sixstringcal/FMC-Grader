@@ -98,10 +98,20 @@ function App() {
                     setEditingIndex(idx);
                     setEditValue(moveObj.text || '');
                   }}
-                  style={{ cursor: 'pointer', textAlign: 'center', padding: '4px 0', borderBottom: '1px solid #eee', fontFamily: 'monospace', fontSize: '1.1em', position: 'relative' }}
+                  style={{
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    padding: '6px 4px',
+                    borderBottom: '1px solid #eee',
+                    fontFamily: 'monospace',
+                    fontSize: '1.1em',
+                    position: 'relative',
+                    background: moveObj.uncertain ? 'rgba(255, 243, 205, 0.8)' : 'transparent',
+                    borderRadius: 4
+                  }}
                 >
                   {moveObj.uncertain && (
-                    <div className="uncertain-badge" aria-hidden>
+                    <div className="uncertain-badge" aria-hidden title="Uncertain move">
                       ?
                     </div>
                   )}
@@ -126,7 +136,14 @@ function App() {
                       <button onClick={() => { setEditingIndex(-1); setEditValue(''); }}>Cancel</button>
                     </div>
                   ) : (
-                    moveObj.text
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                      <div>{moveObj.text}</div>
+                      {typeof moveObj.confidence === 'number' && (
+                        <div style={{ fontSize: '0.65em', color: '#555', opacity: 0.9 }} aria-label={`confidence ${Math.round(moveObj.confidence * 100)}%`}>
+                          {Math.round(moveObj.confidence * 100)}%
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}
