@@ -152,9 +152,11 @@ function parseMoves(text, wordConfidenceList = []) {
         for (let i = 1; i < lines.length; i++) {
             const tokens = formatMoves(lines[i]);
                 tokens.forEach(tok => {
-                const isMatch = moveRegex.test(tok);
+                // Normalize token text for consistent display and matching
+                const displayTok = (normalizeOcrText(tok) || '').toString().trim();
+                const isMatch = moveRegex.test(displayTok);
                 // Find matching OCR word confidences. Try exact normalized match first, then stripped punctuation.
-                const normTok = normalizeOcrText(tok).toString().toLowerCase();
+                const normTok = displayTok.toString().toLowerCase();
                 let confidences = confMap.get(normTok) || null;
                 if (!confidences) {
                     const stripped = normTok.replace(/[^a-z0-9]/gi, '');
@@ -169,9 +171,19 @@ function parseMoves(text, wordConfidenceList = []) {
                 // Determine low-confidence status; set uncertain flag but do NOT modify move text.
                 const isLowConfidence = (typeof confidence === 'number') && (confidence < DEFAULT_CONFIDENCE_THRESHOLD);
                 const uncertainFlag = !isMatch || isLowConfidence;
-                movesList.push({ text: tok, uncertain: uncertainFlag, confidence });
+                movesList.push({ text: displayTok, uncertain: uncertainFlag, confidence });
             });
         }
+    }
+    // Collapse accidental adjacent duplicate tokens often produced by OCR artifacts
+    if (movesList && movesList.length > 1) {
+        const dedup = [];
+        for (let i = 0; i < movesList.length; i++) {
+            if (i === 0 || movesList[i].text !== movesList[i - 1].text) {
+                dedup.push(movesList[i]);
+            }
+        }
+        movesList = dedup;
     }
     // Optionally compute an average confidence for the scramble tokens (if available)
     let scrambleConfidence = null;
